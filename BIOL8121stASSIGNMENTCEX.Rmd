@@ -1,0 +1,200 @@
+---
+title: 'BIOL-812 #1st Assignment'
+author: "Andrew Le"
+date: '2022-03-26'
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Install Packages
+```{r}
+install.packages("TPD")
+install.packages("ks")
+install.packages("dplyr")
+install.packages("ggfortify")
+install.packages("ggplot2")
+install.packages("cowplot")
+install.packages("missMDA")
+install.packages("FactoMineR")
+```
+Load Library
+```{r}
+library(TPD)
+library(ks)
+library(dplyr)
+library(ggfortify)
+library(ggplot2)
+library(cowplot)
+library(missMDA)
+library(FactoMineR)
+```
+
+Import Data
+```{r}
+setwd("/Users/andrewle//Desktop/BIOL812") 
+traitdryaddata<- read.csv("traits.ind 1.csv")
+matrixfreqdryaddata<-read.csv("matrix.freq 1.csv")
+```
+
+View Data
+```{r}
+View(traitdryaddata)
+View(matrixfreqdryaddata)
+```
+
+Check for NA and amount of NA in the Trait dataframe
+```{r}
+is.na(traitdryaddata)
+sum(is.na(traitdryaddata))
+```
+
+Check for NA and amount of NA in the Frequency dataframe
+```{r}
+is.na(matrixfreqdryaddata)
+sum(is.na(matrixfreqdryaddata))
+```
+
+Size-Correction for Trait Data with respect to body size
+```{r}
+View(traitdryaddata)
+traitdryaddata1<-traitdryaddata
+traitdryaddata1[,3:8]<-traitdryaddata[,3:8]/traitdryaddata[,2]
+traitdryaddata2<-traitdryaddata1 %>% select(sp,head.width:leg.length)
+View(traitdryaddata2)
+```
+
+PCA:log transformation
+https://www.geeksforgeeks.org/how-to-make-pca-plot-with-r/
+```{r}
+log.trait<-log(traitdryaddata2[,2:7])
+trait.species<-traitdryaddata2[,1]
+```
+
+PCA: Results (Omitting Row(s) with N/A)
+```{r}
+trait.pca<-prcomp(na.omit(log.trait),center=TRUE,scale. = TRUE)
+print(trait.pca)
+summary(trait.pca)
+```
+PCA: Plot for Variation, to see which PC accounts for the most variation
+```{r}
+plot(trait.pca,type = "l")
+```
+PCA for Component 1 and 2
+```{r}
+autoplot(trait.pca, data=na.omit(traitdryaddata2), colour="sp")
+```
+Biplot to see which trait accounted for what variation
+```{r}
+biplot.trait.pca<-biplot(trait.pca,xlim=c(-0.20,0.20) ,cex=.5);biplot.trait.pca
+```
+Most variation found in PC1, but doesn't agree with paper
+Paper: 
+PC1 (55.1%):Negatively head and pronotum width | Positively Leg Length
+PC2 (21.6%):Negatively eye width | Positively Body size
+
+Our PCA:
+PC1 (52.84%): Negatively leg length and scape length | Positively Mandible Length and Pronotum and Head Width
+PC2 (23.34%): Negatively eye width
+
+
+PCA Summary and Print (removing certain values)
+```{r}
+nb<-estim_ncpPCA(log.trait,scale=TRUE)
+missMDAPCA<- imputePCA(log.trait, ncp=2, scale = TRUE)
+misstraitPCA<-PCA(missMDAPCA$completeObs)
+print(missMDAPCA)
+summary(missMDAPCA)
+```
+Still difference in Variation from Paper
+PC1 = 51.24
+PC2 = 24.78
+
+
+Trait Probability Density (TPD)
+```{r}
+naomittraitdata<-na.omit(traitdryaddata2)
+
+par(mfrow=(c(2,3)))
+#Head Width
+trait_headwidth<-density(naomittraitdata$head.width)
+THW<-plot(trait_headwidth, main = "TPD Head Width")
+
+#Pronotum Width
+trait_pronotumwidth<-density(naomittraitdata$pronotum.width)
+TPW<-plot(trait_pronotumwidth, main = "TPD Pronotum Width")
+
+#Mandible Length
+trait_mandiblelength<-density(naomittraitdata$mandible.length)
+TML<-plot(trait_mandiblelength, main = "TPD Mandible Length")
+
+#Scape Length
+trait_scapelength<-density(naomittraitdata$scape.length)
+TSL<-plot(trait_scapelength, main = "TPD Scape Length")
+
+#Eye Width
+trait_eyewidth<-density(naomittraitdata$eye.width)
+TEW<-plot(trait_eyewidth, main = "TPD Eye Width")
+
+#Leg Length
+trait_leglength<-density(naomittraitdata$leg.length)
+TLL<-plot(trait_leglength, main = "TPD Leg Length")
+```
+
+TPD for two Traits (Head Width and Mandible Length)
+```{r}
+traits_matrix<-naomittraitdata[,c("head.width","mandible.length")]
+sp_matrix<-naomittraitdata$sp
+TPDs_result<-TPDs(species = sp_matrix,traits_matrix)
+```
+
+Plot TPD 
+```{r}
+plotTPD(TPD=TPDs_result)
+```
+X-axis is head width
+Y-axis is mandible length
+Lighter tones of blue shows higher probability of trait combination
+Darker tones of blue shows lower probaility of trait combination
+
+
+Alpha determines the proportion of the probability density function of each species or population that will be included in the resulting TPD
+```{r}
+traits_matrix_d1<-traits_matrix[,c("head.width")]
+TPDs_result_d1_a1<-TPDs(species = sp_matrix, traits=traits_matrix_d1,alpha=0.95)
+plotTPD(TPD = TPDs_result_d1_a1)
+```
+
+Estimating Functional Similarities and Dissimilarity (first six species)
+```{r}
+natrait<-naomittraitdata
+natrait<-as.data.frame(unclass(natrait),stringsAsFactors = TRUE)
+firstSix<-droplevels(unique(natrait$sp)[1:6])
+traitsSix<-subset(natrait,natrait$sp %in% firstSix)
+TPDsSix<-TPDs(species=droplevels(traitsSix$sp), traits = traitsSix$head.width, alpha =0.95)
+```
+Plotting TPD of Height
+```{r}
+par(mfrow=c(1,1))
+plot(TPDsSix$data$evaluation_grid,TPDsSix$TPDs[[1]], type = "n", ylim=c(0,0.02))
+for(i in 1:length(TPDsSix$TPDs)){
+  lines(TPDsSix$data$evaluation_grid, TPDsSix$TPDs[[i]], lwd=2, col=i)
+}
+legend("topright", bty = "n", lwd = 2, col = 1:length(TPDsSix$TPDs),legend=names(TPDsSix$TPDs[1:6]))
+```
+No Species overlap
+
+
+Dissimilarities 
+```{r}
+dissimSix<- dissim(TPDsSix)
+dissimSix$populations$dissimilarity
+```
+
+
+
+
+
+
