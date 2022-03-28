@@ -8,7 +8,7 @@ OR \
 Within this repository: file [2] & [3] \
 *DATA IS NOT MINE*\
  \
-There are 4 files in this repository:\
+There are 5 files in this repository:\
 [1] BIOL8121stASSIGNMENT.Rmd is a R-Markdown that goes through some of the background analysis that was done in the paper, but not shown.\
 This R-markdown was written in R version 4.1.0 (2021-05-18)\
 Within this RMD:
