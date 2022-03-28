@@ -1,8 +1,10 @@
 # The Cryptic Impacts of Invasion: Functional Homogenization of Tropical Ant Communities by Invasive Fire Ants
 Hello everyone!\
-This repository aims to reproduce some data published in: https://doi.org/10.1111/oik.06870 .\
+The goal of this repository is: \
+1)to understand some of the procedural analysis done \
+2)to ultimately reproduce some of the data published in: https://doi.org/10.1111/oik.06870 .\
 Data can be found here: http://dx.doi.org/10.5061/dryad.s7h44j13f .\
-*DATA IS NOT MINE*\
+*<<DATA IS NOT MINE>>*\
  \
 There are 4 files in this repository:\
 [1] BIOL8121stASSIGNMENT.Rmd is a R-Markdown that goes through some of the background analysis that was done in the paper, but not shown.\
