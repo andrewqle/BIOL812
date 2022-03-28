@@ -1,4 +1,4 @@
-# Analysis [The Cryptic Impacts of Invasion: Functional Homogenization of Tropical Ant Communities by Invasive Fire Ants]
+# Analysis: [The Cryptic Impacts of Invasion: Functional Homogenization of Tropical Ant Communities by Invasive Fire Ants]
 Hello everyone!\
 The goal of this repository is: \
 1)to understand some of the procedural analysis done \
