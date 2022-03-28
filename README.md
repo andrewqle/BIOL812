@@ -20,4 +20,6 @@ TPD Analysis at the species level was supposed to turn into community level, the
 [2] README.md is a synposis on purpose of the repository \
 [3] matrix.freq 1.csv is comma-separated values file that was not used in this particular R-markdown analysis. But would have been needed for TPD community analysis. \
 [4] traits.ind 1.csv is comma-separated values file that was used in order to do majority of the analysis.\
-[5] PCA.py is a Spyder(Python 3.9) script coded from the Anaconda-navigator in order to try to replicate the PCA analysis done in R-Markdown
+[5] PCA1.py is a Spyder(Python 3.9) script coded from the Anaconda-navigator in order to try to replicate the PCA analysis done in R-Markdown. \
+
+
