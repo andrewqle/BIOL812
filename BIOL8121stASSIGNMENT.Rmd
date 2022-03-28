@@ -88,7 +88,7 @@ autoplot(trait.pca, data=na.omit(traitdryaddata2), colour="sp")
 ```
 Biplot to see which trait accounted for what variation
 ```{r}
-biplot.trait.pca<-biplot(trait.pca);biplot.trait.pca
+biplot.trait.pca<-biplot(trait.pca,xlim=c(-0.20,0.20) ,cex=.5);biplot.trait.pca
 ```
 Most variation found in PC1, but doesn't agree with paper
 Paper: 
